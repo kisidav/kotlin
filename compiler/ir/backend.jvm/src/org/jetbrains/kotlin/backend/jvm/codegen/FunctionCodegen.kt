@@ -16,9 +16,11 @@ import org.jetbrains.kotlin.codegen.state.GenerationState
 import org.jetbrains.kotlin.codegen.visitAnnotableParameterCount
 import org.jetbrains.kotlin.config.LanguageFeature
 import org.jetbrains.kotlin.descriptors.Modality
+import org.jetbrains.kotlin.descriptors.Visibilities
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.*
 import org.jetbrains.kotlin.ir.util.*
+import org.jetbrains.kotlin.load.java.JavaVisibilities
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.KtElement
@@ -136,7 +138,7 @@ open class FunctionCodegen(
 
     private fun calculateMethodFlags(isStatic: Boolean): Int {
         if (irFunction.origin == IrDeclarationOrigin.FUNCTION_FOR_DEFAULT_PARAMETER) {
-            return Opcodes.ACC_PUBLIC or Opcodes.ACC_SYNTHETIC.let {
+            return irFunction.getVisibilityForDefaultArgumentStub() or Opcodes.ACC_SYNTHETIC.let {
                 if (irFunction is IrConstructor) it else it or Opcodes.ACC_STATIC
             }
         }
